@@ -10,7 +10,6 @@ export default function openIconic(outerProps: OpenIconicProps): JSX.Element {
         className: 'w-4 h-4',
         ...outerProps
     }
-    console.log(props);
     return (
         <svg className={props.className}>
             <use xlinkHref={`open-iconic.svg#${props.name}`} className={props.iconClassName}></use>
