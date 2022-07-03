@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Header from '@components/Header'
 import React from 'react'
-import {BookQuery, BookProperty} from '@api/books/types'
+import {BookProperty} from '@api/books/types'
 import FetchTable from '@components/FetchTable'
 
 const Main: NextPage = () => {
@@ -25,16 +25,11 @@ const Main: NextPage = () => {
 
 function headers() {
   return [
-    {label: "ID", column: "book_id"}, 
-    {label: "Pavadinimas", column: "title"}, 
-    {label: "Žanras", column: "genre"},
-    {label: "Leidimo data", column: "releaseYear"}
+    {label: "ID", column: BookProperty.book_id}, 
+    {label: "Pavadinimas", column: BookProperty.title}, 
+    {label: "Žanras", column: BookProperty.genre},
+    {label: "Leidimo data", column: BookProperty.releaseYear}
   ]
-}
-
-type DataTableState = {
-  query: BookQuery,
-  data: object[]
 }
 
 export default Main

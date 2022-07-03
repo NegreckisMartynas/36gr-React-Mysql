@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Header from '@components/Header'
-import {BookQuery, BookProperty} from '@api/books/types'
+import {AuthorProperty} from '@api/authors/types'
 import FetchTable from '@components/FetchTable'
 
 const Authors: NextPage = () => {
@@ -15,7 +15,7 @@ const Authors: NextPage = () => {
 
       <Header></Header>
       <div className='flex flex-col p-2 items-center'>
-        <h2 className='text-2xl font-bold mb-2'>Knygos</h2>
+        <h2 className='text-2xl font-bold mb-2'>Autoriai</h2>
         <FetchTable endpoint='/api/authors' headers={headers()}></FetchTable>
       </div>
     </main>
@@ -24,9 +24,9 @@ const Authors: NextPage = () => {
 
 function headers() {
   return [
-    {label: "ID", column: "author_id"}, 
-    {label: "Autorius", column: "name"}, 
-    {label: "Parašyta knygų", column: "books_count"}
+    {label: "ID", column: AuthorProperty.author_id}, 
+    {label: "Autorius", column: AuthorProperty.name}, 
+    {label: "Parašyta knygų", column: AuthorProperty.books_count}
   ]
 }
 
