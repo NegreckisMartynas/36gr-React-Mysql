@@ -1,14 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {Book, BookProperty, BookQuery} from './types'
-import {compare, takeInt, takeString, firstOrOnly, isKeyOf} from '@utility/api' 
+import {compare, takeInt, takeString, firstOrOnly, isKeyOf, isInteger} from '@utility/api' 
 import { booksList } from './data';
 
 export default function handler(
     req: NextApiRequest,
-    res: NextApiResponse<Book[]>
+    res: NextApiResponse<{total:number, data: Book[]}>
 ) {
     const query = formValidQuery(req);
-    res.status(200).json(getBooks(query.page, query.sort, query.sortOrder, query.limit))
+    res.status(200).json({
+        total: getBooksTotal(),
+        data: getBooks(query.page, query.sort, query.sortOrder, query.limit)
+    })
 }
 
 function formValidQuery(request: NextApiRequest): BookQuery {
@@ -18,7 +21,7 @@ function formValidQuery(request: NextApiRequest): BookQuery {
         sortOrder: 'desc',
         limit: 10
     }
-    if(request.query.page && Number.isInteger(request.query.page)) {
+    if(request.query.page && isInteger(request.query.page)) {
         queryObject.page = takeInt(request.query.page);
     }
     if(request.query.sort && isKeyOf(BookProperty, request.query.sort)) {
@@ -38,4 +41,8 @@ function getBooks(page: number, sort: keyof typeof BookProperty, sortOrder: 'des
     return booksList
             .sort((a:Book,b:Book) => sortOrder === 'desc' ? compare(a[sort], b[sort]): - compare(a[sort], b[sort]))
             .slice(limit * (page-1), limit * page);
+}
+
+function getBooksTotal() {
+    return booksList.length;
 }

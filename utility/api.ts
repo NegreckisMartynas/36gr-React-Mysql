@@ -1,3 +1,7 @@
+export function isInteger(param:string|string[]|undefined) {
+    return !isNaN(param as any) && Number.isInteger(Number.parseInt(takeString(param)));
+}
+
 export function firstOrOnly(param:string|string[]|undefined): string {
     if(param == undefined) return '';
     return Array.isArray(param) ? param[0] : param;

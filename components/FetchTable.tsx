@@ -1,17 +1,19 @@
 import { params } from "@utility/url";
 import React from "react";
 import Table from '@components/Table'
+import Paginator from "@components/Paginator";
 
 type FetchTableState = {
   query: Query,
-  data: object[]
+  data: object[],
+  total: number
 }
 
 type Query = {
-  page?: number,
+  page: number,
   sort?: string,
   sortOrder?: 'desc' | 'asc',
-  limit?: number
+  limit: number
 }
 
 type FetchTableProps = {
@@ -23,15 +25,17 @@ export default class FetchTable extends React.Component<FetchTableProps, FetchTa
   constructor(props: FetchTableProps) {
     super(props);
     this.state = {
-      query: {},
-      data: []
+      query: {
+        page: 1,
+        limit: 10
+      },
+      data: [],
+      total: 0
     }
   }
 
   componentDidMount() {
-    fetch(this.props.endpoint + params(this.state.query))
-        .then(res => res.json())
-        .then(data => this.setState({...this.state, data: data}))
+    this.fetchData()
   }
 
   headers = () => {
@@ -40,22 +44,39 @@ export default class FetchTable extends React.Component<FetchTableProps, FetchTa
 
   render() {
     return (
-      <Table 
-        headers={this.headers()}
-        body={this.state.data}
-        onSort={this.sort}
-      ></Table>
+      <div>
+        <Table 
+          headers={this.headers()}
+          body={this.state.data}
+          onSort={this.sort}
+        ></Table>
+        <Paginator active={this.state.query.page ?? 1} 
+                   total={Math.ceil(this.state.total/this.state.query.limit)} 
+                   onPageClick={this.page}></Paginator>
+      </div>
     )
   }
 
   sort = (s: {column: string, order: 'asc' | 'desc'}) => {
-    this.setState({...this.state, query: {...this.state.query, sort: s.column, sortOrder: s.order}})
-    this.fetchData();
-  } 
+    this.setState(
+      {...this.state, query: {...this.state.query, sort: s.column, sortOrder: s.order}}, 
+      this.fetchData)
+    ;
+  }
+
+  page = (page: number) => {
+    this.setState(
+      {...this.state, query: {...this.state.query, page}}, 
+      this.fetchData)
+  }
 
   fetchData = () => {
-    fetch('/api/books' + params(this.state.query))
+    fetch(this.props.endpoint + params(this.state.query))
         .then(res => res.json())
-        .then(data => this.setState({...this.state, data: data}))
+        .then(res => {
+          this.setState(old => {
+            return {...old, data: res.data, total: res.total}
+          })
+        })
   }
 }
