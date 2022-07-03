@@ -18,7 +18,7 @@ enum BookProperty  {
 
 type BookQuery = {
     page: number,
-    sort: keyof Book,
+    sort: keyof typeof BookProperty,
     limit: number
 }
 
@@ -32,14 +32,11 @@ export default function handler(
 }
 
 function formValidQuery(request: NextApiRequest): BookQuery {
-    let queryObject = {
+    let queryObject: BookQuery = {
         page: 1,
-        sort: 'book_id' as BookProperty,
+        sort: 'book_id',
         limit: 20
     }
-    console.log(request.query.sort)
-    console.log(Object.keys(BookProperty))
-    console.log(Object.keys(BookProperty).includes('book_id'))
     if(request.query.page && Number.isInteger(request.query.page)) {
         queryObject.page = takeInt(request.query.page);
     }
@@ -53,7 +50,7 @@ function formValidQuery(request: NextApiRequest): BookQuery {
     return queryObject;
 }
 
-function getBooks(page: number, sort: BookProperty, limit: number) {
+function getBooks(page: number, sort: keyof typeof BookProperty, limit: number) {
     return booksList
             .sort((a:Book,b:Book) => compare(a[sort], b[sort]))
             .slice(limit * (page-1));
