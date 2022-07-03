@@ -1,27 +1,7 @@
-import {booksList} from '../../data';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {firstOrOnly, takeInt, takeString, isKeyOf} from '@utility/api'
-
-type Book = {
-	[BookProperty.book_id]: number;
-	[BookProperty.title]: string;
-	[BookProperty.genre]: string | null;
-	[BookProperty.releaseYear]: number | null; 
-}
-
-enum BookProperty  {
-    book_id = 'book_id',
-    title = 'title',
-    genre = 'genre',
-    releaseYear = 'releaseYear'   
-}
-
-type BookQuery = {
-    page: number,
-    sort: keyof typeof BookProperty,
-    sortOrder: 'desc' | 'asc',
-    limit: number
-}
+import {Book, BookProperty, BookQuery} from './types'
+import {compare, takeInt, takeString, firstOrOnly, isKeyOf} from '@utility/api' 
+import { booksList } from './data';
 
 export default function handler(
     req: NextApiRequest,
@@ -45,7 +25,7 @@ function formValidQuery(request: NextApiRequest): BookQuery {
         queryObject.sort = takeString(request.query.sort) as BookProperty;
     }
     if(request.query.sortOrder && ['asc', 'desc'].includes(firstOrOnly(request.query.sortOrder))) {
-        queryObject.sortOrder = takeString(firstOrOnly(request.query.sortOrder)) as 'desc' | 'asc';
+        queryObject.sortOrder = takeString(request.query.sortOrder) as 'desc' | 'asc';
     }
     if(request.query.limit && Number.isInteger(request.query.limit)) {
         queryObject.limit = takeInt(request.query.limit);
@@ -55,27 +35,7 @@ function formValidQuery(request: NextApiRequest): BookQuery {
 }
 
 function getBooks(page: number, sort: keyof typeof BookProperty, sortOrder: 'desc' | 'asc', limit: number) {
-    console.log(page, sort, sortOrder, limit)
     return booksList
             .sort((a:Book,b:Book) => sortOrder === 'desc' ? compare(a[sort], b[sort]): - compare(a[sort], b[sort]))
             .slice(limit * (page-1), limit * page);
-}
-
-function compare(a:number|string|null, b:number|string|null): number {
-    if(a === null) {
-        return -1;
-    }
-    else if(b === null) {
-        return 1;
-    }
-    else if(typeof(a) === 'number' && typeof(b) === 'number') {
-        return a - b;
-    }
-    else if(typeof(a) === 'string' && typeof(b) === 'string'){
-        return a.localeCompare(b);
-    }
-    else {
-        console.error("Can't compare:", a, b);
-        return 0;
-    }
 }

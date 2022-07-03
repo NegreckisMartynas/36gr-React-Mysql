@@ -6,21 +6,8 @@ import Header from '@components/Header'
 import {params} from '@utility/url';
 import { render } from 'react-dom'
 import React from 'react'
+import {BookQuery, BookProperty} from '@api/books/types'
 
-
-enum BookProperty  {
-  book_id = 'book_id',
-  title = 'title',
-  genre = 'genre',
-  releaseYear = 'releaseYear'   
-}
-
-type BookQuery = {
-  page?: number,
-  sort?: keyof typeof BookProperty,
-  sortOrder?: 'desc' | 'asc',
-  limit?: number
-}
 
 const Main: NextPage = () => {
   return (
@@ -39,7 +26,6 @@ const Main: NextPage = () => {
     </main>
   )
 }
-
 
 type DataTableState = {
   query: BookQuery,
