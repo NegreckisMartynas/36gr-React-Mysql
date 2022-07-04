@@ -8,13 +8,13 @@ export type Book = {
 export enum BookProperty  {
     book_id = 'book_id',
     title = 'title',
-    genre = 'genre',
+    genre = 'genre_id',
     release_year = 'release_year'   
 }
 
 export type BookQuery = {
     page: number,
-    sort: keyof typeof BookProperty,
+    sort: BookProperty[keyof BookProperty],
     sortOrder: 'desc' | 'asc',
     limit: number
 }

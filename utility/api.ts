@@ -19,6 +19,10 @@ export function isKeyOf(enumObj: any, param:string|string[]|undefined): boolean 
     return Object.keys(enumObj).includes(firstOrOnly(param));
 }
 
+export function isValueOf(enumObj: any, param:string|string[]|undefined): boolean {
+    return Object.values(enumObj).includes(firstOrOnly(param));
+}
+
 export function compare(a:number|string|null, b:number|string|null): number {
     if(a === null) {
         return -1;
