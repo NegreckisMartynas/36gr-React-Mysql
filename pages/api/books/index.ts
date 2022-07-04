@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {Book, BookProperty, BookQuery} from './types'
-import {compare, takeInt, takeString, firstOrOnly, isValueOf, isInteger} from '@utility/api' 
-import { booksList } from './data';
+import {takeInt, takeString, firstOrOnly, isValueOf, isInteger} from '@utility/api' 
 import mysql from 'mysql2/promise';
 
 export default async function handler(
@@ -48,13 +47,13 @@ function formValidQuery(request: NextApiRequest): BookQuery {
 
 async function getBooksDatabase(connection: mysql.Connection, query: BookQuery): Promise<Book[]>{
     const [rows, fields] = await connection.query(
-        `select * from book ORDER BY ${query.sort + ' ' + query.sortOrder} LIMIT ? OFFSET ?`,
+        `select * from view_book ORDER BY ${query.sort + ' ' + query.sortOrder} LIMIT ? OFFSET ?`,
         [query.limit, (query.page-1)*query.limit])
     return (rows as any[]).map(r => {
         return {
             [BookProperty.book_id]: r.book_id,
             [BookProperty.title]: r.title,
-            [BookProperty.genre]: r.genre_id,
+            [BookProperty.genre]: r.name,
             [BookProperty.release_year]: r.release_year,
         }
     });

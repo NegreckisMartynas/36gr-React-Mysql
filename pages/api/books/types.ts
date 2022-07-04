@@ -8,7 +8,7 @@ export type Book = {
 export enum BookProperty  {
     book_id = 'book_id',
     title = 'title',
-    genre = 'genre_id',
+    genre = 'name',
     release_year = 'release_year'   
 }
 
