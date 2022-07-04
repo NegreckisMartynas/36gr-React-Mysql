@@ -2,14 +2,14 @@ export type Book = {
 	[BookProperty.book_id]: number;
 	[BookProperty.title]: string;
 	[BookProperty.genre]: string | null;
-	[BookProperty.releaseYear]: number | null; 
+	[BookProperty.release_year]: number | null; 
 }
 
 export enum BookProperty  {
     book_id = 'book_id',
     title = 'title',
     genre = 'genre',
-    releaseYear = 'releaseYear'   
+    release_year = 'release_year'   
 }
 
 export type BookQuery = {

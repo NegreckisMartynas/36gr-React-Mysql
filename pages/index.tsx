@@ -28,7 +28,7 @@ function headers() {
     {label: "ID", column: BookProperty.book_id}, 
     {label: "Pavadinimas", column: BookProperty.title}, 
     {label: "Žanras", column: BookProperty.genre},
-    {label: "Leidimo data", column: BookProperty.releaseYear}
+    {label: "Leidimo data", column: BookProperty.release_year}
   ]
 }
 
