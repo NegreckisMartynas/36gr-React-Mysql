@@ -3,26 +3,9 @@ import React from "react";
 import Table from '@components/Table'
 import Paginator from "@components/Paginator";
 
-type FetchTableState = {
-  query: Query,
-  data: object[],
-  total: number
-}
-
-type Query = {
-  page: number,
-  sort?: string,
-  sortOrder?: 'desc' | 'asc',
-  limit: number
-}
-
-type FetchTableProps = {
-  endpoint: string;
-  headers: {label: string, column: string}[]
-}
   
-export default class FetchTable extends React.Component<FetchTableProps, FetchTableState> {
-  constructor(props: FetchTableProps) {
+export default class FetchTable extends React.Component {
+  constructor(props) {
     super(props);
     this.state = {
       query: {
@@ -57,14 +40,14 @@ export default class FetchTable extends React.Component<FetchTableProps, FetchTa
     )
   }
 
-  sort = (s: {column: string, order: 'asc' | 'desc'}) => {
+  sort = (s) => {
     this.setState(
       {...this.state, query: {...this.state.query, sort: s.column, sortOrder: s.order}}, 
       this.fetchData)
     ;
   }
 
-  page = (page: number) => {
+  page = (page) => {
     this.setState(
       {...this.state, query: {...this.state.query, page}}, 
       this.fetchData)

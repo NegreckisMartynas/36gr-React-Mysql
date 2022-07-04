@@ -1,12 +1,8 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import {Book, BookProperty, BookQuery} from './types'
+import {BookProperty} from './types'
 import {compare, takeInt, takeString, firstOrOnly, isKeyOf, isInteger} from '@utility/api' 
 import { booksList } from './data';
 
-export default function handler(
-    req: NextApiRequest,
-    res: NextApiResponse<{total:number, data: Book[]}>
-) {
+export default function handler(req, res) {
     const query = formValidQuery(req);
     res.status(200).json({
         total: getBooksTotal(),
@@ -14,8 +10,8 @@ export default function handler(
     })
 }
 
-function formValidQuery(request: NextApiRequest): BookQuery {
-    let queryObject: BookQuery = {
+function formValidQuery(request) {
+    let queryObject = {
         page: 1,
         sort: 'book_id',
         sortOrder: 'desc',
@@ -25,10 +21,10 @@ function formValidQuery(request: NextApiRequest): BookQuery {
         queryObject.page = takeInt(request.query.page);
     }
     if(request.query.sort && isKeyOf(BookProperty, request.query.sort)) {
-        queryObject.sort = takeString(request.query.sort) as BookProperty;
+        queryObject.sort = takeString(request.query.sort);
     }
     if(request.query.sortOrder && ['asc', 'desc'].includes(firstOrOnly(request.query.sortOrder))) {
-        queryObject.sortOrder = takeString(request.query.sortOrder) as 'desc' | 'asc';
+        queryObject.sortOrder = takeString(request.query.sortOrder);
     }
     if(request.query.limit && Number.isInteger(request.query.limit)) {
         queryObject.limit = takeInt(request.query.limit);
@@ -37,9 +33,9 @@ function formValidQuery(request: NextApiRequest): BookQuery {
     return queryObject;
 }
 
-function getBooks(page: number, sort: keyof typeof BookProperty, sortOrder: 'desc' | 'asc', limit: number) {
+function getBooks(page, sort, sortOrder, limit) {
     return booksList
-            .sort((a:Book,b:Book) => sortOrder === 'desc' ? compare(a[sort], b[sort]): - compare(a[sort], b[sort]))
+            .sort((a,b) => sortOrder === 'desc' ? compare(a[sort], b[sort]): - compare(a[sort], b[sort]))
             .slice(limit * (page-1), limit * page);
 }
 

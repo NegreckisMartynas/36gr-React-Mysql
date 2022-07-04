@@ -1,11 +1,10 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Header from '@components/Header'
 import React from 'react'
 import {BookProperty} from '@api/books/types'
 import FetchTable from '@components/FetchTable'
 
-const Main: NextPage = () => {
+const Main = () => {
   return (
     <main>
       <Head>

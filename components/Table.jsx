@@ -1,34 +1,13 @@
 import React from "react";
 import OpenIconic from "@components/OpenIconic"
 
-type Sort = {column: string, order: 'desc' | 'asc'}  
-
-type TableData = {
-    headers?: TableHeaders,
-    body: TableBody,
-    onSort?: (s: Sort) => void
-}
-
-type TableHeaders = TableHeaderCol[]
-
-type TableHeaderCol = {
-    label: string,
-    column: string
-}
-
-type TableBody = object[];
-
-type TableState = {
-    sort?: Sort
-}
-
-export default class Table extends React.Component<TableData, TableState> {
-    constructor(props: TableData) {
+export default class Table extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {};
     }
 
-    sortForCol = (col: TableHeaderCol) => {
+    sortForCol = (col) => {
         const onSort = this.props.onSort ?? (_ => {});
         let currentSort = this.state.sort;
         return () => {
@@ -53,7 +32,7 @@ export default class Table extends React.Component<TableData, TableState> {
     }
 }
 
-const header = (props: TableData, sortForCol: (col: TableHeaderCol) => () => void, sort?: Sort )  => {
+const header = (props, sortForCol, sort )  => {
     if(props.headers) {
         return <thead >
                     <tr key="head">
@@ -67,9 +46,9 @@ const header = (props: TableData, sortForCol: (col: TableHeaderCol) => () => voi
 }
 
 const headerCol = (
-        col: TableHeaderCol, 
-        sortForCol: (col: TableHeaderCol) => () => void, 
-        sort?: Sort) => {
+        col, 
+        sortForCol, 
+        sort) => {
     return (
         <th key={col.column+col.label} 
             className={`px-2 border-b-2 border-r last:border-r-0 border-slate-700/50  bg-slate-300/50 
@@ -80,7 +59,7 @@ const headerCol = (
     )
 }
 
-const sortIcon = (sort: Sort | undefined, column: string) => {
+const sortIcon = (sort, column) => {
     if(sort && sort.column === column) {
         return sort.order === 'desc' ? 
                 <OpenIconic className="inline-block w-4 h-4" 
@@ -92,14 +71,14 @@ const sortIcon = (sort: Sort | undefined, column: string) => {
     }
 }
 
-const body = (props: TableData) => {
+const body = (props) => {
     const orderRow = props.headers ? orderByHeader(props.headers) : coerceToNaturalOrderOfFirst(props.body);
     return <tbody>
                 {props.body.map((rowObject) => row(orderRow(rowObject)))}
             </tbody>
 }
 
-const row = (rowData: any[]) => {
+const row = (rowData) => {
     return  <tr key={rowData.toString()} className="bg-slate-100/50 even:bg-slate-200/50 hover:bg-slate-400/50 border-y last:border-t">
                 {rowData.map( (col, i) => 
                     <td key={i} className="border-x first:border-r last:border-l border-slate-300/50 px-2">
@@ -109,14 +88,14 @@ const row = (rowData: any[]) => {
             </tr>
 }
 
-const orderByHeader = (header: TableHeaders) => {
+const orderByHeader = (header) => {
     const map = header.map(h => h.column)
     return createMappingFunction(map);
 }
 
-const coerceToNaturalOrderOfFirst = (data: TableBody) => {
+const coerceToNaturalOrderOfFirst = (data) => {
     const map = data.length ? Object.getOwnPropertyNames(data[0]) : null;
-    return map ? createMappingFunction(map) : (_: any) => []
+    return map ? createMappingFunction(map) : (_) => []
 }
 
-const createMappingFunction = (map:string[])  => (row: any) => map.map(m => row[m]);
+const createMappingFunction = (map)  => (row) => map.map(m => row[m]);

@@ -1,4 +1,4 @@
-export default function Header(): JSX.Element {
+export default function Header() {
     return (
         <header className="flex bg-red-800 text-white font-bold h-12 items-end  py-1">
             <h1 className="mr-auto px-2 text-3xl">Biblioteka</h1>
@@ -9,5 +9,5 @@ export default function Header(): JSX.Element {
     )
 }
 
-const a = (href: string, label: string) => 
+const a = (href, label) => 
     <a className="px-2 hover:underline" href={href}>{label}</a>

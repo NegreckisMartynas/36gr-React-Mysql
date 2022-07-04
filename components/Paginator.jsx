@@ -1,11 +1,9 @@
-type PaginatorProps = {
-    active: number,
-    total: number,
-    onPageClick: (num: number) => void
-}
-
-export default function Paginator(props: PaginatorProps) {
-
+/**
+ * 
+ * @param {{active: number, total:number, onPageClick: (num:number) => void}} props 
+ * @returns 
+ */
+export default function Paginator(props) {
     return (
         <div className="flex justify-center">
             {buttons(props.active, props.total, props.onPageClick)}
@@ -13,8 +11,8 @@ export default function Paginator(props: PaginatorProps) {
     )
 } 
 
-function buttons(active: number, total: number, onPageClick: (num: number) => void) {
-    const buttons: JSX.Element[] = paginatorRange(active, total).map( (e, i) => {
+function buttons(active, total, onPageClick) {
+    const buttons = paginatorRange(active, total).map( (e, i) => {
         if(e === 'skip') return (
             <span key={'skip'+i} className="p-1 w-8 text-center">...</span>
         )
@@ -29,14 +27,19 @@ function buttons(active: number, total: number, onPageClick: (num: number) => vo
 
     return buttons;
 }
-
-function paginatorRange(active:number, total: number): (number|'skip')[] {
+/**
+ * 
+ * @param {number} active 
+ * @param {number} total 
+ * @returns {(number|'skip')[]}
+ */
+function paginatorRange(active, total) {
     let min = active - 2;
     let max = active + 2;
     if( min <= 2 ) min = 1;
     if( max >= total-2 ) max = total;
 
-    let pages: (number|'skip')[] = []
+    let pages = []
 
     if(min > 1) pages.push(1, 'skip')
     for(let i = min; i <= max; i++) {

@@ -1,10 +1,9 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Header from '@components/Header'
 import {AuthorProperty} from '@api/authors/types'
 import FetchTable from '@components/FetchTable'
 
-const Authors: NextPage = () => {
+const Authors = () => {
   return (
     <main>
       <Head>
