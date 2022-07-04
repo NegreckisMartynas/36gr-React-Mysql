@@ -15,10 +15,11 @@ export default async function handler(
         password: 'bit',
         database: 'library'
     })
+    //
 
     res.status(200).json({
-        total: getBooksTotal(),
-        data: await getBooks(connection, query)//getBooks(query.page, query.sort, query.sortOrder, query.limit)
+        total: await getBooksTotal(connection),
+        data: await getBooksDatabase(connection, query)//getBooks(query.page, query.sort, query.sortOrder, query.limit)
     })
 }
 
@@ -45,8 +46,8 @@ function formValidQuery(request: NextApiRequest): BookQuery {
     return queryObject;
 }
 
-async function getBooks(connection: mysql.Connection, query: BookQuery): Promise<Book[]>{
-    const [rows, fields] = await connection.execute(
+async function getBooksDatabase(connection: mysql.Connection, query: BookQuery): Promise<Book[]>{
+    const [rows, fields] = await connection.query(
         `select * from book ORDER BY ? LIMIT ? OFFSET ?`,
         [query.sort + ' ' + query.sortOrder, query.limit, (query.page-1)*query.limit])
     return (rows as any[]).map(r => {
@@ -59,6 +60,7 @@ async function getBooks(connection: mysql.Connection, query: BookQuery): Promise
     });
 }
 
-function getBooksTotal() {
-    return booksList.length;
+async function getBooksTotal(connection: mysql.Connection) {
+    const [rows] = await connection.query('select count(*) as count from book');
+    return (rows as any)[0].count;
 }
